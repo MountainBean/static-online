@@ -21,6 +21,8 @@ jobs:
           role-to-assume: arn:aws:iam::261723522732:role/role-samjdrew-online-github-actions
           aws-region: ${{ env.AWS_REGION }}
           audience: sts.amazonaws.com
-      - name: Sts GetCallerIdentity
+      - name: list bucket contents
+        shell: bash
         run: |
-          aws sts get-caller-identity
+          aws s3api list-objects-v2 \
+          --bucket 'samjdrew.com'
