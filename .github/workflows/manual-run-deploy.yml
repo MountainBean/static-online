@@ -1,0 +1,43 @@
+name: Run Deploy to Prod
+on:
+  workflow_dispatch:
+
+env:
+  AWS_REGION : ap-southeast-6
+
+permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
+jobs:
+  oidc_debug_test:
+    environment: prod
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    name: A test of the oidc debugger
+    steps:
+      - name: Debug OIDC Claims
+        uses: steve-todorov/oidc-debugger-action@v1
+        with:
+          audience: sts.amazonaws.com
+
+
+  PushToS3:
+    environment: prod
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v6
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::261723522732:role/role-debug-github-OIDC
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
+      - name: Sts GetCallerIdentity
+        run: |
+          aws sts get-caller-identity
