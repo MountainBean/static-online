@@ -1,0 +1,38 @@
+{% extends "samjd/base.html" %}
+{% load static %}
+{% load samjd_extras %}
+
+{% block title %}
+    Samuel J Drew
+{% endblock title %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static "samjd/project_detail.css" %}?ver=5">
+{% endblock css_files %}
+
+{% block content %}
+<div class="project">
+    <h2>{{ project.title }}</h2>
+    {% if project.subheading %}
+    <h4>{{ project.subheading }}</h4>
+    {% endif %}
+    {% if project.blurb %}
+    <i><p>{{ project.blurb|render_markdown }}</p></i>
+    {% endif %}
+    <hr class="hr-solid">
+    {% if data %}
+        <div class="data_list">
+            {{ data|safe }}
+        </div>
+        <i><p>Try the demos above. Note that some examples will try to make use
+            of a keyboard and mouse so mobile viewers may be unable to interact.
+        </p></i>
+    <hr class="hr-solid">
+    {% endif %}
+    {{ project.text|render_markdown }}
+</div>
+{% endblock content %}
+{% block script %}
+sidebar.classList.toggle('aboutme');
+sidebar.classList.toggle('pages');
+{% endblock script %}
