@@ -1,5 +1,8 @@
 name: Run Deploy to Prod
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 env:
@@ -21,8 +24,7 @@ jobs:
           role-to-assume: arn:aws:iam::261723522732:role/role-samjdrew-online-github-actions
           aws-region: ${{ env.AWS_REGION }}
           audience: sts.amazonaws.com
-      - name: list bucket contents
+      - name: sync website directory with bucket
         shell: bash
         run: |
-          aws s3api list-objects-v2 \
-          --bucket 'samjdrew.com'
+          aws s3 sync ./www/ s3://samjdrew.com/ --delete --region ap-southeast-6
